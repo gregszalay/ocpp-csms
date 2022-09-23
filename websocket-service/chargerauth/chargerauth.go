@@ -2,15 +2,21 @@ package chargerauth
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	stations "github.com/gregszalay/ocpp-csms-common-types/types"
 )
 
 func GetCharger(chargerId string) (stations.Charger, error) {
 	//resp, err := http.Get("http://localhost:5000/charger/" + id)
-	resp, err := http.Get("http://host.docker.internal:5000/charger/" + chargerId)
+	deviceServiceHost := "host.docker.internal"
+	if d := os.Getenv("DEVICE_SERVICE_HOST"); d != "" {
+		deviceServiceHost = d
+	}
+	resp, err := http.Get(fmt.Sprintf("http://%s:5000/charger/%s", deviceServiceHost, chargerId))
 	if err != nil {
 		return stations.Charger{}, err
 	}
