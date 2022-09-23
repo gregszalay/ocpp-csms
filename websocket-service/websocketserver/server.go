@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gregszalay/ocpp-csms/queuemessage"
+	"github.com/gregszalay/ocpp-csms/websocket-service/queuemessage"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -54,12 +54,12 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(`id := `, id)
 
 	// /***** AUTH */
-	charger, err := chargerauth.GetCharger(id)
-	if err != nil {
-		fmt.Println("Error: could not get charger data!")
-		return
-	}
-	fmt.Printf("Charger successfully authenticated: %+v\n", charger)
+	// charger, err := chargerauth.GetCharger(id)
+	// if err != nil {
+	// 	fmt.Println("Error: could not get charger data!")
+	// 	return
+	// }
+	// fmt.Printf("Charger successfully authenticated: %+v\n", charger)
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -72,7 +72,7 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 	// 	WSConn:   ws,
 	// }
 
-	numberOfLatestConnection := len(connections) - 1
+	//numberOfLatestConnection := len(connections) - 1
 
 	for {
 		messageType, receivedMessage, err := ws.ReadMessage()
@@ -81,7 +81,7 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		fmt.Println("-------------------------- ")
-		fmt.Printf("Got message from connection %d\n%+v\n", numberOfLatestConnection, charger)
+		//fmt.Printf("Got message from connection %d\n%+v\n", numberOfLatestConnection, charger)
 		fmt.Println("messageType: ", messageType)
 		fmt.Println("message payload: ", string(receivedMessage))
 		fmt.Println("-------------------------- ")
@@ -126,7 +126,7 @@ func sendToClient(w http.ResponseWriter, r *http.Request) {
 func Run() {
 
 	fmt.Println("Hello OCPP WS 3!")
-	router := routers.NewRouter()
+	router := NewRouter()
 	//go processInbound()
 	//setupRoutes()
 	log.Fatal(http.ListenAndServe(":3000", router))

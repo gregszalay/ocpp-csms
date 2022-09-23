@@ -15,8 +15,8 @@ import (
 	"net/http"
 	"sync"
 
-	sw "github.com/chargerevolution/ocpp-device-service/http"
-	"github.com/chargerevolution/ocpp-device-service/pubsub"
+	sw "github.com/gregszalay/ocpp-csms/device-service/http"
+	"github.com/gregszalay/ocpp-csms/device-service/pubsub"
 )
 
 func main() {

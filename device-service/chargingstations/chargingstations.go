@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/chargerevolution/ocpp-device-service-api/types"
-	"github.com/chargerevolution/ocpp-device-service/devicedb"
+	"github.com/gregszalay/ocpp-csms-common-types/types"
+	"github.com/gregszalay/ocpp-csms/device-service/devicedb"
 
 	"github.com/fatih/structs"
 )

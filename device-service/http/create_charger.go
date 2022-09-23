@@ -15,8 +15,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/chargerevolution/ocpp-device-service-api/types"
-	"github.com/chargerevolution/ocpp-device-service/chargingstations"
+	"github.com/gregszalay/ocpp-csms-common-types/types"
+	"github.com/gregszalay/ocpp-csms/device-service/chargingstations"
 )
 
 func CreateNewCharger(w http.ResponseWriter, r *http.Request) {

@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/chargerevolution/ocpp-device-service/chargingstations"
+	"github.com/gregszalay/ocpp-csms/device-service/chargingstations"
 )
 
 func FindAllChargers(w http.ResponseWriter, r *http.Request) {

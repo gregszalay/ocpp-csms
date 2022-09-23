@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	stations "github.com/chargerevolution/ocpp-device-service-api/types"
+	stations "github.com/gregszalay/ocpp-csms-common-types/types"
 )
 
 func GetCharger(chargerId string) (stations.Charger, error) {

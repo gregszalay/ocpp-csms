@@ -2,8 +2,9 @@ version: '3'
 
 services:
   websocket-service:
-    build: ./websocket-service
-    image: websocket-service:v1.0.0
+    build: .
+    command: /app/websocket-service
+    #image: websocket-service:v1.0.0
     volumes:
       - ./websocket-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:
@@ -11,8 +12,9 @@ services:
     ports:
       - 3000:3000
   device-service:
-    build: ./device-service
-    image: device-service:v1.0.0
+    build: .
+    command: /app/device-service
+    #image: device-service:v1.0.0
     volumes:
       - ./device-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:

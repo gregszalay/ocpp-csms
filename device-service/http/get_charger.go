@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/chargerevolution/ocpp-device-service/devicedb"
+	"github.com/gregszalay/ocpp-csms/device-service/devicedb"
 
 	"github.com/gorilla/mux"
 )
