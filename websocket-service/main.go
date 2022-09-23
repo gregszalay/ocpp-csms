@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ocpp-websocket-service/websocketserver"
+	"github.com/gregszalay/ocpp-csms/websocketserver"
 )
 
 func main() {

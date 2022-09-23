@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"ocpp-websocket-service/ocppwrapper"
 	"reflect"
+
+	"github.com/gregszalay/ocpp-messages-go/wrappers"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-googlecloud/pkg/googlecloud"
@@ -19,7 +20,7 @@ type QueueMessage struct {
 	ChargerId       string `json:"chargerId"`
 }
 
-var calls_awaiting_response map[string]ocppwrapper.CALL = map[string]ocppwrapper.CALL{}
+var calls_awaiting_response map[string]wrappers.CALL = map[string]wrappers.CALL{}
 
 // var amqpURI = "amqp://guest:guest@rabbit-manager:5672/"
 // var amqpConfig = amqp.NewDurableQueueConfig(amqpURI)
@@ -95,18 +96,20 @@ func (qm *QueueMessage) Publish() {
 
 func (qm *QueueMessage) getMQTopicName() (string, error) {
 	switch qm.MessageTypeId {
-	case ocppwrapper.CALL_TYPE:
-		call_m, err := ocppwrapper.ParseCALLMessage(qm.OCPPMessageJSON)
-		if err != nil {
-			return "", err
+	case wrappers.CALL_TYPE:
+		var call wrappers.CALL
+		call_unmarshal_err := call.UnmarshalJSON([]byte(qm.OCPPMessageJSON))
+		if call_unmarshal_err != nil {
+			fmt.Printf("Failed to unmarshal OCPP CALL message. Error: %s", call_unmarshal_err)
+			return "", call_unmarshal_err
 		}
-		return call_m.Action + "Request", nil
-	case ocppwrapper.CALLRESULT_TYPE:
+		return call.Action + "Request", nil
+	case wrappers.CALLRESULT_TYPE:
 		original_call_m := calls_awaiting_response[qm.MessageId]
 		return original_call_m.Action + "Response", nil
-	case ocppwrapper.CALLERROR_TYPE:
+	case wrappers.CALLERROR_TYPE:
 		original_call_m := calls_awaiting_response[qm.MessageId]
 		return original_call_m.Action + "Error", nil
 	}
-	return "", errors.New("Error: wrong message type id!")
+	return "", errors.New("error: wrong message type id")
 }
