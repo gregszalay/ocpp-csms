@@ -236,6 +236,8 @@ github.com/gorilla/websocket v1.5.0 h1:PPwGk2jz7EePpoHN/+ClbZu8SPxiqlu12wZP/3sWm
 github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220923204416-901ca1f560d5 h1:vs/bFr00FlCB77pGKAPUoxKh4p5T5knxgo7q2QgDw6o=
 github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220923204416-901ca1f560d5/go.mod h1:YNeJwK+O7gVsOz4h9bH1caEy/zRhTH605Oc4chg0awM=
+github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220924223355-c0da0eacef7e h1:PIZZMn9kXwl3ePlWZ6lTnB3M0Gy3GNvSi2cTrRhflqc=
+github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220924223355-c0da0eacef7e/go.mod h1:YNeJwK+O7gVsOz4h9bH1caEy/zRhTH605Oc4chg0awM=
 github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30 h1:1uRuib7eNGyAKNwi9hYi3su/gNZYQmIi7jO0xjOs8aQ=
 github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30/go.mod h1:L112aq2dovkcOBYSvaQlr1hYY+JXldcx9DWnaYmtzHk=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=

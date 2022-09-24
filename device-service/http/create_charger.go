@@ -15,7 +15,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/gregszalay/ocpp-csms-common-types/types"
+	types "github.com/gregszalay/ocpp-csms-common-types/devices"
 	"github.com/gregszalay/ocpp-csms/device-service/chargingstations"
 )
 

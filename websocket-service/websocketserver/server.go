@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gregszalay/ocpp-csms/websocket-service/queuemessage"
+	"github.com/gregszalay/ocpp-csms/websocket-service/MessageIn"
+	"github.com/gregszalay/ocpp-csms/websocket-service/chargerauth"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -24,25 +25,18 @@ type ChargingStationConnection struct {
 	WSConn   *websocket.Conn
 }
 
-type IncomingMessage struct {
-	chargerId string
-	Message   []byte
-}
-
 var outgoingMessages map[string]string = map[string]string{}
 
-func processInbound(incoming IncomingMessage) {
+func processInbound(incoming MessageIn.MessageIn) {
 	//for incoming := range incomingWSMessages {
 	log.Printf("received message in goroutine, payload: %s", string(incoming.Message))
-	qm, err := queuemessage.MakeQueueMessage(string(incoming.Message), incoming.chargerId)
+	err := incoming.Process()
 	if err != nil {
-		fmt.Println("Error ---")
+		fmt.Println("processing error ---")
 		fmt.Println(err)
 		return
 		//panic(err)
 	}
-	qm.Publish()
-	//}
 }
 
 func Ocpp(w http.ResponseWriter, r *http.Request) {
@@ -54,12 +48,12 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(`id := `, id)
 
 	// /***** AUTH */
-	// charger, err := chargerauth.GetCharger(id)
-	// if err != nil {
-	// 	fmt.Println("Error: could not get charger data!")
-	// 	return
-	// }
-	// fmt.Printf("Charger successfully authenticated: %+v\n", charger)
+	charger, err := chargerauth.GetCharger(id)
+	if err != nil {
+		fmt.Println("Error: could not get charger data!")
+		return
+	}
+	fmt.Printf("Charger successfully authenticated: %+v\n", charger)
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -85,7 +79,7 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("messageType: ", messageType)
 		fmt.Println("message payload: ", string(receivedMessage))
 		fmt.Println("-------------------------- ")
-		new_msg := IncomingMessage{
+		new_msg := MessageIn.MessageIn{
 			chargerId: id,
 			Message:   receivedMessage,
 		}

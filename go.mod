@@ -10,7 +10,6 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220923204416-901ca1f560d5
 	github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30
 	google.golang.org/api v0.97.0
 )
@@ -29,6 +28,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.5.1 // indirect
 	github.com/googleapis/go-type-adapters v1.0.0 // indirect
+	github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220924223355-c0da0eacef7e // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect

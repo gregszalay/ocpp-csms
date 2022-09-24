@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gregszalay/ocpp-csms-common-types/types"
+	types "github.com/gregszalay/ocpp-csms-common-types/devices"
 	"github.com/gregszalay/ocpp-csms/device-service/devicedb"
 
 	"github.com/fatih/structs"
