@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	stations types "github.com/gregszalay/ocpp-csms-common-types/devices"
+	stations "github.com/gregszalay/ocpp-csms-common-types/devices"
 )
 
 func GetCharger(chargerId string) (stations.Charger, error) {

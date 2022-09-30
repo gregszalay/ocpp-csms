@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/gregszalay/ocpp-csms-common-types/QueuedError"
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
 	"github.com/gregszalay/ocpp-csms/websocket-service/pub"
 	"github.com/gregszalay/ocpp-messages-go/wrappers"
@@ -12,13 +13,12 @@ import (
 var calls_awaiting_response map[string]wrappers.CALL = map[string]wrappers.CALL{}
 
 type MessageIn struct {
-	chargerId string
+	ChargerId string
 	Message   []byte
 }
 
 func (in *MessageIn) Process() error {
 	fmt.Println("Processing incoming message...")
-	fmt.Println(in.Message)
 
 	messageTypeId, err := in.parseMessageTypeId()
 	if err != nil {
@@ -28,45 +28,90 @@ func (in *MessageIn) Process() error {
 
 	switch messageTypeId {
 	case wrappers.CALL_TYPE:
-		in.process_as_CALL()
+		return in.process_as_CALL()
 	case wrappers.CALLRESULT_TYPE:
-		in.process_as_CALLRESULT()
+		return in.process_as_CALLRESULT()
 	case wrappers.CALLERROR_TYPE:
-		in.process_as_CALLERROR()
+		return in.process_as_CALLERROR()
 	}
+	return nil
 }
 
+// Processes the the incoming message (the receiver type) as a CALL message
 func (in *MessageIn) process_as_CALL() error {
 	var call wrappers.CALL
-	call_unmarshal_err := call.UnmarshalJSON([]byte(in.Message))
-	if call_unmarshal_err != nil {
-		fmt.Printf("Failed to unmarshal OCPP CALL message. Error: %s", call_unmarshal_err)
-		return call_unmarshal_err
+	err := call.UnmarshalJSON([]byte(in.Message))
+	if err != nil {
+		fmt.Printf("Failed to unmarshal OCPP CALL message. Error: %s", err)
+		return err
 	}
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: call.MessageId,
-		DeviceId:  in.chargerId,
+		DeviceId:  in.ChargerId,
 		Payload:   call.Payload,
 	}
-	pub.Publish(qm, call.Action+"Request")
+	call_topic := call.Action + "Request"
+	// We publish the CALLRESULT to the relevant upbsub topic
+	if err := pub.Publish(call_topic, qm); err != nil {
+		fmt.Println("Error!")
+		fmt.Println(err)
+		panic(err)
+	}
+	return nil
 }
 
+// Processes the the incoming message (the receiver type) as a CALLRESULT message
+// These are messages that are repsonses to CALLs we have sent out to the charging station
 func (in *MessageIn) process_as_CALLRESULT() error {
 	var callresult wrappers.CALLRESULT
-	call_result_unmarshal_err := callresult.UnmarshalJSON(in.Message)
-	if call_result_unmarshal_err != nil {
-		fmt.Printf("Failed to unmarshal OCPP CALLRESULT message. Error: %s", call_result_unmarshal_err)
+	err := callresult.UnmarshalJSON(in.Message)
+	if err != nil {
+		fmt.Printf("Failed to unmarshal OCPP CALLRESULT message. Error: %s", err)
 	}
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: callresult.MessageId,
-		DeviceId:  in.chargerId,
+		DeviceId:  in.ChargerId,
 		Payload:   callresult.Payload,
 	}
-	original_call_m := calls_awaiting_response[callresult.MessageId]
-	pub.Publish(qm, original_call_m.Action+"Response")
+	// We retrieve the original CALL message that we previously sent out to the charging station
+	// so that we know which topic to put the response in
+	original_call_message := calls_awaiting_response[callresult.MessageId]
+	callresult_topic := original_call_message.Action + "Response"
+	// We publish the CALLRESULT to the relevant upbsub topic
+	if err := pub.Publish(callresult_topic, qm); err != nil {
+		fmt.Println("Error!")
+		fmt.Println(err)
+		panic(err)
+	}
+	return nil
 }
 
+// Processes the the incoming message (the receiver type) as a CALLERROR message
 func (in *MessageIn) process_as_CALLERROR() error {
+	var callerror wrappers.CALLERROR
+	err := callerror.UnmarshalJSON([]byte(in.Message))
+	if err != nil {
+		fmt.Printf("Failed to unmarshal OCPP CALLERROR message. Error: %s", err)
+		return err
+	}
+	qm := QueuedError.QueuedError{
+		MessageId:        callerror.MessageId,
+		DeviceId:         in.ChargerId,
+		ErrorCode:        callerror.ErrorCode,
+		ErrorDescription: callerror.ErrorDescription,
+		ErrorDetails:     callerror.ErrorDetails,
+	}
+	// We retrieve the original CALL message that we previously sent out to the charging station
+	// so that we know which topic to put the error response in
+	original_call_message := calls_awaiting_response[callerror.MessageId]
+	callerror_topic := original_call_message.Action + "Error"
+	// We publish the CALLRESULT to the relevant upbsub topic
+	if err := pub.Publish(callerror_topic, qm); err != nil {
+		fmt.Println("Error!")
+		fmt.Println(err)
+		panic(err)
+	}
+	return nil
 
 }
 

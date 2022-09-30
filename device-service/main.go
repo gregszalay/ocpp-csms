@@ -20,13 +20,13 @@ import (
 )
 
 func main() {
-	log.Printf("Server started")
+	log.Printf("device-service started")
 
 	var waitgroup sync.WaitGroup
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Inside my goroutine 1")
+		fmt.Println("Creating http server...")
 		router := sw.NewRouter()
 		log.Fatal(http.ListenAndServe(":5000", router))
 		waitgroup.Done()
@@ -34,7 +34,7 @@ func main() {
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Inside my goroutine 2")
+		fmt.Println("Creating pubsub subscriptions...")
 		pubsub.Subscribe()
 		waitgroup.Done()
 	}()

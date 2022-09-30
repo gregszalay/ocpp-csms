@@ -1,4 +1,4 @@
-package pub
+package ocpppub
 
 import (
 	"encoding/json"
