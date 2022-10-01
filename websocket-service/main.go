@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gregszalay/ocpp-csms/websocket-service/ocppsub"
+	"github.com/gregszalay/ocpp-csms/websocket-service/pubsub"
 	"github.com/gregszalay/ocpp-csms/websocket-service/websocketserver"
 )
 
@@ -15,15 +15,15 @@ func main() {
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Creating Websocket server...")
-		websocketserver.Run()
+		fmt.Println("Creating pubsub subscriptions...")
+		pubsub.Subscribe()
 		waitgroup.Done()
 	}()
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Creating pubsub subscriptions...")
-		ocppsub.Subscribe()
+		fmt.Println("Starting Websocket server...")
+		websocketserver.Start()
 		waitgroup.Done()
 	}()
 

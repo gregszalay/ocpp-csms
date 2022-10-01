@@ -1,23 +1,38 @@
-package MessageIn
+package messageprocessing
 
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedError"
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
-	"github.com/gregszalay/ocpp-csms/websocket-service/pub"
+	"github.com/gregszalay/ocpp-csms/websocket-service/pubsub"
 	"github.com/gregszalay/ocpp-messages-go/wrappers"
 )
 
 var calls_awaiting_response map[string]wrappers.CALL = map[string]wrappers.CALL{}
 
-type MessageIn struct {
+type ProcessableMessage struct {
 	ChargerId string
 	Message   []byte
 }
 
-func (in *MessageIn) Process() error {
+var ProcessableMessages = make(chan *ProcessableMessage)
+
+func Start() {
+	for incoming_message := range ProcessableMessages {
+		log.Printf("Sending message to processor: \n%s", string(incoming_message.Message))
+		err := incoming_message.process()
+		if err != nil {
+			fmt.Println("processing error ---")
+			fmt.Println(err)
+			return
+		}
+	}
+}
+
+func (in *ProcessableMessage) process() error {
 	fmt.Println("Processing incoming message...")
 
 	messageTypeId, err := in.parseMessageTypeId()
@@ -38,7 +53,7 @@ func (in *MessageIn) Process() error {
 }
 
 // Processes the the incoming message (the receiver type) as a CALL message
-func (in *MessageIn) process_as_CALL() error {
+func (in *ProcessableMessage) process_as_CALL() error {
 	var call wrappers.CALL
 	err := call.UnmarshalJSON([]byte(in.Message))
 	if err != nil {
@@ -52,7 +67,7 @@ func (in *MessageIn) process_as_CALL() error {
 	}
 	call_topic := call.Action + "Request"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pub.Publish(call_topic, qm); err != nil {
+	if err := pubsub.Publish(call_topic, qm); err != nil {
 		fmt.Println("Error!")
 		fmt.Println(err)
 		panic(err)
@@ -62,7 +77,7 @@ func (in *MessageIn) process_as_CALL() error {
 
 // Processes the the incoming message (the receiver type) as a CALLRESULT message
 // These are messages that are repsonses to CALLs we have sent out to the charging station
-func (in *MessageIn) process_as_CALLRESULT() error {
+func (in *ProcessableMessage) process_as_CALLRESULT() error {
 	var callresult wrappers.CALLRESULT
 	err := callresult.UnmarshalJSON(in.Message)
 	if err != nil {
@@ -78,7 +93,7 @@ func (in *MessageIn) process_as_CALLRESULT() error {
 	original_call_message := calls_awaiting_response[callresult.MessageId]
 	callresult_topic := original_call_message.Action + "Response"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pub.Publish(callresult_topic, qm); err != nil {
+	if err := pubsub.Publish(callresult_topic, qm); err != nil {
 		fmt.Println("Error!")
 		fmt.Println(err)
 		panic(err)
@@ -87,7 +102,7 @@ func (in *MessageIn) process_as_CALLRESULT() error {
 }
 
 // Processes the the incoming message (the receiver type) as a CALLERROR message
-func (in *MessageIn) process_as_CALLERROR() error {
+func (in *ProcessableMessage) process_as_CALLERROR() error {
 	var callerror wrappers.CALLERROR
 	err := callerror.UnmarshalJSON([]byte(in.Message))
 	if err != nil {
@@ -106,7 +121,7 @@ func (in *MessageIn) process_as_CALLERROR() error {
 	original_call_message := calls_awaiting_response[callerror.MessageId]
 	callerror_topic := original_call_message.Action + "Error"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pub.Publish(callerror_topic, qm); err != nil {
+	if err := pubsub.Publish(callerror_topic, qm); err != nil {
 		fmt.Println("Error!")
 		fmt.Println(err)
 		panic(err)
@@ -115,7 +130,7 @@ func (in *MessageIn) process_as_CALLERROR() error {
 
 }
 
-func (in *MessageIn) parseMessageTypeId() (int, error) {
+func (in *ProcessableMessage) parseMessageTypeId() (int, error) {
 	var data []interface{}
 	err := json.Unmarshal([]byte(in.Message), &data)
 	if err != nil {
