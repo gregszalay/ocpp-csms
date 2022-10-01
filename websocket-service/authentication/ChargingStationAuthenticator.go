@@ -9,6 +9,7 @@ import (
 	"os"
 
 	stations "github.com/gregszalay/ocpp-csms-common-types/devices"
+	log "github.com/sirupsen/logrus"
 )
 
 func AuthenticateChargingStation(chargerId string, r *http.Request) error {
@@ -19,7 +20,7 @@ func AuthenticateChargingStation(chargerId string, r *http.Request) error {
 		return errors.New(fmt.Sprintf("error: authentication failed for charging station %s", chargerId))
 	}
 
-	fmt.Printf("Charging station info: \n%+v\n", station)
+	log.Info("Charging station info: ", station)
 
 	return nil
 }

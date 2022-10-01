@@ -1,22 +1,19 @@
-package pubsub
+package subscribing
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-googlecloud/pkg/googlecloud"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
+	"github.com/gregszalay/ocpp-csms/websocket-service/websocketserver"
+	log "github.com/sirupsen/logrus"
 )
 
 var out_topics []string = []string{
 	"BootNotificationResponse",
 }
-
-//var Subs map[string]<-chan *message.Message = map[string]<-chan *message.Message{}
-var ToChargerQueue map[string]chan *QueuedMessage.QueuedMessage = map[string]chan *QueuedMessage.QueuedMessage{}
 
 func Subscribe() {
 
@@ -49,23 +46,20 @@ func Subscribe() {
 func process(topic string, messages <-chan *message.Message) {
 	for msg := range messages {
 
-		log.Printf("received message: %s, topic: %s, payload: %s", msg.UUID, topic, string(msg.Payload))
+		log.Info("received message: %s, topic: %s, payload: %s", msg.UUID, topic, string(msg.Payload))
 
 		var qm QueuedMessage.QueuedMessage
 		err := qm.UnmarshalJSON(msg.Payload)
 		if err != nil {
-			fmt.Printf("Failed to unmarshal QueuedMessage message. Error: %s", err)
+			log.Error("failed to unmarshal QueuedMessage message. Error: %s", err)
 		}
 
-		// fmt.Println("QueuedMessage as an OBJECT:")
-		// litter.Dump(qm)
-		//
-		if ToChargerQueue[qm.DeviceId] == nil {
+		if websocketserver.AllMessagesToDeviceMap[qm.DeviceId] == nil {
 			msg.Ack()
 			continue
 		}
-		fmt.Println("Putting msg into ToChargerQueue")
-		ToChargerQueue[qm.DeviceId] <- &qm
+		log.Debug("Putting msg into MessagesToDevice")
+		websocketserver.AllMessagesToDeviceMap[qm.DeviceId] <- &qm
 
 		// we need to Acknowledge that we received and processed the message,
 		// otherwise, it will be resent over and over again.

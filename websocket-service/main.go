@@ -1,28 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 
-	"github.com/gregszalay/ocpp-csms/websocket-service/pubsub"
+	"github.com/gregszalay/ocpp-csms/websocket-service/subscribing"
 	"github.com/gregszalay/ocpp-csms/websocket-service/websocketserver"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	//amqppublisher.Setup()
 
+	log.SetLevel(log.InfoLevel)
+
 	var waitgroup sync.WaitGroup
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Creating pubsub subscriptions...")
-		pubsub.Subscribe()
+		log.Info("Creating pubsub subscriptions...")
+		subscribing.Subscribe()
 		waitgroup.Done()
 	}()
 
 	waitgroup.Add(1)
 	go func() {
-		fmt.Println("Starting Websocket server...")
+		log.Info("Starting Websocket server...")
 		websocketserver.Start()
 		waitgroup.Done()
 	}()

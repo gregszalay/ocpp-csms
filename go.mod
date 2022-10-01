@@ -13,6 +13,7 @@ require (
 	github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220930200238-05372d55b0fa
 	github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30
 	github.com/sanity-io/litter v1.5.5
+	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/api v0.98.0
 )
 

@@ -1,91 +1,67 @@
-package messageprocessing
+package messagemux
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedError"
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
-	"github.com/gregszalay/ocpp-csms/websocket-service/pubsub"
+	"github.com/gregszalay/ocpp-csms/websocket-service/publishing"
 	"github.com/gregszalay/ocpp-messages-go/wrappers"
+	log "github.com/sirupsen/logrus"
 )
 
 var calls_awaiting_response map[string]wrappers.CALL = map[string]wrappers.CALL{}
 
-type ProcessableMessage struct {
-	ChargerId string
-	Message   []byte
-}
-
-var ProcessableMessages = make(chan *ProcessableMessage)
-
-func Start() {
-	for incoming_message := range ProcessableMessages {
-		log.Printf("Sending message to processor: \n%s", string(incoming_message.Message))
-		err := incoming_message.process()
-		if err != nil {
-			fmt.Println("processing error ---")
-			fmt.Println(err)
-			return
-		}
-	}
-}
-
-func (in *ProcessableMessage) process() error {
-	fmt.Println("Processing incoming message...")
-
-	messageTypeId, err := in.parseMessageTypeId()
+func ProcessAndPublish(stationId string, message []byte) error {
+	messageTypeId, err := parseMessageTypeId(stationId, message)
 	if err != nil {
-		fmt.Printf("error: could not parse message type id\n")
+		log.Error("could not parse message type id")
 		return err
 	}
 
 	switch messageTypeId {
 	case wrappers.CALL_TYPE:
-		return in.process_as_CALL()
+		return process_as_CALL(stationId, message)
 	case wrappers.CALLRESULT_TYPE:
-		return in.process_as_CALLRESULT()
+		return process_as_CALLRESULT(stationId, message)
 	case wrappers.CALLERROR_TYPE:
-		return in.process_as_CALLERROR()
+		return process_as_CALLERROR(stationId, message)
 	}
 	return nil
 }
 
 // Processes the the incoming message (the receiver type) as a CALL message
-func (in *ProcessableMessage) process_as_CALL() error {
+func process_as_CALL(stationId string, message []byte) error {
 	var call wrappers.CALL
-	err := call.UnmarshalJSON([]byte(in.Message))
+	err := call.UnmarshalJSON([]byte(message))
 	if err != nil {
-		fmt.Printf("Failed to unmarshal OCPP CALL message. Error: %s", err)
+		log.Error("failed to unmarshal OCPP CALL message. Error: %s", err)
 		return err
 	}
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: call.MessageId,
-		DeviceId:  in.ChargerId,
+		DeviceId:  stationId,
 		Payload:   call.Payload,
 	}
 	call_topic := call.Action + "Request"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pubsub.Publish(call_topic, qm); err != nil {
-		fmt.Println("Error!")
-		fmt.Println(err)
-		panic(err)
+	if err := publishing.Publish(call_topic, qm); err != nil {
+		log.Error(err)
 	}
 	return nil
 }
 
 // Processes the the incoming message (the receiver type) as a CALLRESULT message
 // These are messages that are repsonses to CALLs we have sent out to the charging station
-func (in *ProcessableMessage) process_as_CALLRESULT() error {
+func process_as_CALLRESULT(stationId string, message []byte) error {
 	var callresult wrappers.CALLRESULT
-	err := callresult.UnmarshalJSON(in.Message)
+	err := callresult.UnmarshalJSON(message)
 	if err != nil {
-		fmt.Printf("Failed to unmarshal OCPP CALLRESULT message. Error: %s", err)
+		log.Error("failed to unmarshal OCPP CALLRESULT message. Error: ", err)
 	}
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: callresult.MessageId,
-		DeviceId:  in.ChargerId,
+		DeviceId:  stationId,
 		Payload:   callresult.Payload,
 	}
 	// We retrieve the original CALL message that we previously sent out to the charging station
@@ -93,25 +69,23 @@ func (in *ProcessableMessage) process_as_CALLRESULT() error {
 	original_call_message := calls_awaiting_response[callresult.MessageId]
 	callresult_topic := original_call_message.Action + "Response"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pubsub.Publish(callresult_topic, qm); err != nil {
-		fmt.Println("Error!")
-		fmt.Println(err)
-		panic(err)
+	if err := publishing.Publish(callresult_topic, qm); err != nil {
+		log.Error(err)
 	}
 	return nil
 }
 
 // Processes the the incoming message (the receiver type) as a CALLERROR message
-func (in *ProcessableMessage) process_as_CALLERROR() error {
+func process_as_CALLERROR(stationId string, message []byte) error {
 	var callerror wrappers.CALLERROR
-	err := callerror.UnmarshalJSON([]byte(in.Message))
+	err := callerror.UnmarshalJSON([]byte(message))
 	if err != nil {
-		fmt.Printf("Failed to unmarshal OCPP CALLERROR message. Error: %s", err)
+		log.Error("failed to unmarshal OCPP CALLERROR message. Error: %s", err)
 		return err
 	}
 	qm := QueuedError.QueuedError{
 		MessageId:        callerror.MessageId,
-		DeviceId:         in.ChargerId,
+		DeviceId:         stationId,
 		ErrorCode:        callerror.ErrorCode,
 		ErrorDescription: callerror.ErrorDescription,
 		ErrorDetails:     callerror.ErrorDetails,
@@ -121,25 +95,23 @@ func (in *ProcessableMessage) process_as_CALLERROR() error {
 	original_call_message := calls_awaiting_response[callerror.MessageId]
 	callerror_topic := original_call_message.Action + "Error"
 	// We publish the CALLRESULT to the relevant upbsub topic
-	if err := pubsub.Publish(callerror_topic, qm); err != nil {
-		fmt.Println("Error!")
-		fmt.Println(err)
-		panic(err)
+	if err := publishing.Publish(callerror_topic, qm); err != nil {
+		log.Error(err)
 	}
 	return nil
 
 }
 
-func (in *ProcessableMessage) parseMessageTypeId() (int, error) {
+func parseMessageTypeId(stationId string, message []byte) (int, error) {
 	var data []interface{}
-	err := json.Unmarshal([]byte(in.Message), &data)
+	err := json.Unmarshal([]byte(message), &data)
 	if err != nil {
-		fmt.Printf("Error: could not unmarshal json: %s\n", err)
+		log.Error("could not unmarshal json", err)
 		return 0, err
 	}
 	messageTypeId, ok := data[0].(float64)
 	if !ok {
-		fmt.Printf("Error: data[0] is not a uint8\n")
+		log.Error("data[0] is not a uint8", err)
 		return 0, err
 	}
 	return int(messageTypeId), nil
