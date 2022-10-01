@@ -52,10 +52,10 @@ func Ocpp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("successfully established websocket connection")
-	fmt.Printf("number of connections: %d\n", len(connections))
 
 	// Save ws conn
 	connections[id] = ws
+	fmt.Printf("number of connections: %d\n", len(connections))
 
 	// Create response queue for charging station
 	pubsub.ToChargerQueue[id] = make(chan *QueuedMessage.QueuedMessage)

@@ -13,7 +13,7 @@ import (
 var collection string = "devices"
 
 func GetCharger(id string) *types.Charger {
-	result := devicedb.Get(collection, id)
+	result, _ := devicedb.Get(collection, id)
 	// Convert map to json string
 	jsonStr, err := json.Marshal(result)
 	if err != nil {

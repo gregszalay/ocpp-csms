@@ -2,6 +2,7 @@ package devicedb
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -66,15 +67,16 @@ func Delete(doc map[string]interface{}, collection string, id string) {
 	fmt.Printf("Firestore result response: %v\n", result)
 }
 
-func Get(collection string, id string) map[string]interface{} {
+func Get(collection string, id string) (map[string]interface{}, error) {
 	result, err := client.Collection(collection).Doc(id).Get(context.Background())
 	if err != nil {
 		log.Fatalf("Failed getting document. Error: %v\n", err)
+		return nil, errors.New("Failed getting document")
 	} else {
 		fmt.Printf("Successfully got document!: %v\n", result.Data())
 	}
 	fmt.Printf("Firestore result response: %v\n", result)
-	return result.Data()
+	return result.Data(), nil
 }
 
 func ListAll(collection string) []map[string]interface{} {

@@ -21,17 +21,22 @@ import (
 
 func FindChargers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
 	vars := mux.Vars(r)
 	id, ok := vars["chargerId"]
 	if !ok {
 		fmt.Println("id is missing in parameters")
 	}
 	fmt.Println(`id := `, id)
-	device := devicedb.Get("devices", id)
+	device, device_err := devicedb.Get("devices", id)
+	if device_err != nil {
+		fmt.Println(device_err)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	jData, err := json.Marshal(device)
 	if err != nil {
 		fmt.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 	w.Write(jData)
 }
