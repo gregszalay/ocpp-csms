@@ -4,7 +4,6 @@ services:
   websocket-service:
     build: .
     command: /app/websocket-service
-    #image: websocket-service:v1.0.0
     volumes:
       - ./websocket-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:
@@ -12,13 +11,12 @@ services:
       - GCP_PROJECT_ID=chargerevolutioncloud
       - SERVICE_APP_NAME=device-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
-      - LOG_LEVEL=Info
+      - LOG_LEVEL=Debug
     ports:
       - 3000:3000
   device-service:
     build: .
     command: /app/device-service
-    #image: device-service:v1.0.0
     volumes:
       - ./device-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:
@@ -29,3 +27,14 @@ services:
       - LOG_LEVEL=Info
     ports:
       - 5000:5000
+  user-service:
+    build: .
+    command: /app/user-service
+    volumes:
+      - ./user-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/PRIVATE.json
+      - GCP_PROJECT_ID=chargerevolutioncloud
+      - SERVICE_APP_NAME=user-service
+      # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
+      - LOG_LEVEL=Debug

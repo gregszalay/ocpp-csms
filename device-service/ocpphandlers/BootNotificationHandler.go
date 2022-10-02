@@ -7,7 +7,6 @@ import (
 	"github.com/gregszalay/ocpp-csms/device-service/publishing"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationRequest"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationResponse"
-	"github.com/gregszalay/ocpp-messages-go/wrappers"
 	"github.com/sanity-io/litter"
 )
 
@@ -28,16 +27,10 @@ func BootNotificationHandler(request_json []byte, messageId string, deviceId str
 		Status:      BootNotificationResponse.RegistrationStatusEnumType_1_Accepted,
 	}
 
-	callresult := wrappers.CALLRESULT{
-		MessageTypeId: wrappers.CALLRESULT_TYPE,
-		MessageId:     messageId,
-		Payload:       resp,
-	}
-
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: messageId,
 		DeviceId:  deviceId,
-		Payload:   callresult,
+		Payload:   resp,
 	}
 
 	if err := publishing.Publish("BootNotificationResponse", qm); err != nil {

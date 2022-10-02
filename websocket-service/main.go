@@ -9,12 +9,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var LOG_LEVEL string = os.Getenv("LOGLEVEL")
-
 func main() {
-	//amqppublisher.Setup()
 
-	setLogLevel(LOG_LEVEL)
+	if LOG_LEVEL := os.Getenv("LOG_LEVEL"); LOG_LEVEL != "" {
+		setLogLevel(LOG_LEVEL)
+	} else {
+		setLogLevel("Info")
+	}
 
 	var waitgroup sync.WaitGroup
 

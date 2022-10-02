@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
-	"sync"
+	"time"
 
-	sw "github.com/gregszalay/ocpp-csms/device-service/http/go"
-	"github.com/gregszalay/ocpp-csms/device-service/subscribing"
+	"github.com/gregszalay/ocpp-csms/user-service/db"
+	"github.com/gregszalay/ocpp-csms/user-service/subscribing"
+	"github.com/gregszalay/ocpp-messages-go/types/AuthorizeRequest"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,24 +19,18 @@ func main() {
 		setLogLevel("Info")
 	}
 
-	var waitgroup sync.WaitGroup
+	// FOR TESTING PURPOSES ONLY:
+	newIdTokenInfo := AuthorizeRequest.IdTokenType{
+		IdToken: "abcd",
+		Type:    AuthorizeRequest.IdTokenEnumType_1_ISO14443,
+	}
+	db.CreateIdToken("ID001", newIdTokenInfo)
 
-	waitgroup.Add(1)
-	go func() {
-		fmt.Println("Creating http server...")
-		router := sw.NewRouter()
-		log.Fatal(http.ListenAndServe(":5000", router))
-		waitgroup.Done()
-	}()
-
-	waitgroup.Add(1)
-	go func() {
-		fmt.Println("Creating pubsub subscriptions...")
-		subscribing.Subscribe()
-		waitgroup.Done()
-	}()
-
-	waitgroup.Wait()
+	fmt.Println("Creating pubsub subscriptions...")
+	subscribing.Subscribe()
+	for {
+		time.Sleep(time.Millisecond * 10)
+	}
 
 }
 
