@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
-	"github.com/gregszalay/ocpp-csms/device-service/ocpppub"
+	"github.com/gregszalay/ocpp-csms/device-service/publishing"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationRequest"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationResponse"
 	"github.com/gregszalay/ocpp-messages-go/wrappers"
@@ -40,7 +40,7 @@ func BootNotificationHandler(request_json []byte, messageId string, deviceId str
 		Payload:   callresult,
 	}
 
-	if err := ocpppub.Publish("BootNotificationResponse", qm); err != nil {
+	if err := publishing.Publish("BootNotificationResponse", qm); err != nil {
 		fmt.Println("Error!")
 		fmt.Println(err)
 		panic(err)

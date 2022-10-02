@@ -10,7 +10,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/gregszalay/ocpp-csms-common-types v0.0.0-20220930200238-05372d55b0fa
+	github.com/gregszalay/ocpp-csms-common-types v0.0.0-20221002113125-1c2d0c557857
 	github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30
 	github.com/sanity-io/litter v1.5.5
 	github.com/sirupsen/logrus v1.9.0
@@ -36,7 +36,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/net v0.0.0-20220930213112-107f3e3c3b0b // indirect
+	golang.org/x/net v0.0.0-20221002022538-bcab6841153b // indirect
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1 // indirect
 	golang.org/x/sync v0.0.0-20220929204114-8fcdb60fdcc0 // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect

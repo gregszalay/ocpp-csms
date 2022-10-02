@@ -11,17 +11,19 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"sync"
 
-	sw "github.com/gregszalay/ocpp-csms/device-service/http"
-	"github.com/gregszalay/ocpp-csms/device-service/pubsub"
+	sw "github.com/gregszalay/ocpp-csms/device-service/http/go"
+	"github.com/gregszalay/ocpp-csms/device-service/subscribing"
+	log "github.com/sirupsen/logrus"
 )
 
-func main() {
-	log.Printf("device-service started")
+var LOG_LEVEL string = os.Getenv("LOGLEVEL")
 
+func main() {
+	setLogLevel(LOG_LEVEL)
 	var waitgroup sync.WaitGroup
 
 	waitgroup.Add(1)
@@ -35,10 +37,29 @@ func main() {
 	waitgroup.Add(1)
 	go func() {
 		fmt.Println("Creating pubsub subscriptions...")
-		pubsub.Subscribe()
+		subscribing.Subscribe()
 		waitgroup.Done()
 	}()
 
 	waitgroup.Wait()
 
+}
+
+func setLogLevel(levelName string) {
+	switch levelName {
+	case "Panic":
+		log.SetLevel(log.PanicLevel)
+	case "Fatal":
+		log.SetLevel(log.FatalLevel)
+	case "Error":
+		log.SetLevel(log.ErrorLevel)
+	case "Warn":
+		log.SetLevel(log.WarnLevel)
+	case "Info":
+		log.SetLevel(log.InfoLevel)
+	case "Debug":
+		log.SetLevel(log.DebugLevel)
+	case "Trace":
+		log.SetLevel(log.TraceLevel)
+	}
 }

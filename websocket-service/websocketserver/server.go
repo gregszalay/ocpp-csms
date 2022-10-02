@@ -21,7 +21,6 @@ var OCPP_CONNECTION_URL string = "/ocpp/{id}"
 var OCPP_PORT string = ":3000"
 
 func Start() {
-	log.Info("Starting Websocket server...")
 	router := newRouter()
 	log.Fatal(http.ListenAndServe(OCPP_PORT, router))
 }

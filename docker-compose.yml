@@ -9,6 +9,10 @@ services:
       - ./websocket-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/PRIVATE.json
+      - GCP_PROJECT_ID=chargerevolutioncloud
+      - SERVICE_APP_NAME=device-service
+      # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
+      - LOG_LEVEL=Info
     ports:
       - 3000:3000
   device-service:
@@ -19,5 +23,9 @@ services:
       - ./device-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/PRIVATE.json
+      - GCP_PROJECT_ID=chargerevolutioncloud
+      - SERVICE_APP_NAME=websocket-service
+      # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
+      - LOG_LEVEL=Info
     ports:
       - 5000:5000

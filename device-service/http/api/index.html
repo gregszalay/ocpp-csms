@@ -1,0 +1,588 @@
+<!doctype html>
+<html>
+  <head>
+    <title>OCPP Device Service</title>
+    <style type="text/css">
+      body {
+      	font-family: Trebuchet MS, sans-serif;
+      	font-size: 15px;
+      	color: #444;
+      	margin-right: 24px;
+      }
+      
+      h1	{
+      	font-size: 25px;
+      }
+      h2	{
+      	font-size: 20px;
+      }
+      h3	{
+      	font-size: 16px;
+      	font-weight: bold;
+      }
+      hr	{
+      	height: 1px;
+      	border: 0;
+      	color: #ddd;
+      	background-color: #ddd;
+      }
+      
+      .app-desc {
+        clear: both;
+        margin-left: 20px;
+      }
+      .param-name {
+        width: 100%;
+      }
+      .license-info {
+        margin-left: 20px;
+      }
+      
+      .license-url {
+        margin-left: 20px;
+      }
+      
+      .model {
+        margin: 0 0 0px 20px;
+      }
+      
+      .method {
+        margin-left: 20px;
+      }
+      
+      .method-notes	{
+      	margin: 10px 0 20px 0;
+      	font-size: 90%;
+      	color: #555;
+      }
+      
+      pre {
+        padding: 10px;
+        margin-bottom: 2px;
+      }
+      
+      .http-method {
+       text-transform: uppercase;
+      }
+      
+      pre.get {
+        background-color: #0f6ab4;
+      }
+      
+      pre.post {
+        background-color: #10a54a;
+      }
+      
+      pre.put {
+        background-color: #c5862b;
+      }
+      
+      pre.delete {
+        background-color: #a41e22;
+      }
+      
+      .huge	{
+      	color: #fff;
+      }
+      
+      pre.example {
+        background-color: #f3f3f3;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      
+      code {
+        white-space: pre;
+      }
+      
+      .nickname {
+        font-weight: bold;
+      }
+      
+      .method-path {
+        font-size: 1.5em;
+        background-color: #0f6ab4;
+      }
+      
+      .up {
+        float:right;
+      }
+      
+      .parameter {
+        width: 500px;
+      }
+      
+      .param {
+        width: 500px;
+        padding: 10px 0 0 20px;
+        font-weight: bold;
+      }
+      
+      .param-desc {
+        width: 700px;
+        padding: 0 0 0 20px;
+        color: #777;
+      }
+      
+      .param-type {
+        font-style: italic;
+      }
+      
+      .param-enum-header {
+      width: 700px;
+      padding: 0 0 0 60px;
+      color: #777;
+      font-weight: bold;
+      }
+      
+      .param-enum {
+      width: 700px;
+      padding: 0 0 0 80px;
+      color: #777;
+      font-style: italic;
+      }
+      
+      .field-label {
+        padding: 0;
+        margin: 0;
+        clear: both;
+      }
+      
+      .field-items	{
+      	padding: 0 0 15px 0;
+      	margin-bottom: 15px;
+      }
+      
+      .return-type {
+        clear: both;
+        padding-bottom: 10px;
+      }
+      
+      .param-header {
+        font-weight: bold;
+      }
+      
+      .method-tags {
+        text-align: right;
+      }
+      
+      .method-tag {
+        background: none repeat scroll 0% 0% #24A600;
+        border-radius: 3px;
+        padding: 2px 10px;
+        margin: 2px;
+        color: #FFF;
+        display: inline-block;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+  <h1>OCPP Device Service</h1>
+    <div class="app-desc">REST API to manage OCPP devices (e.g. Charging Stations)</div>
+    <div class="app-desc">More information: <a href="https://helloreverb.com">https://helloreverb.com</a></div>
+    <div class="app-desc">Contact Info: <a href="gr.szalay@gmail.com">gr.szalay@gmail.com</a></div>
+    <div class="app-desc">Version: v2.0.0</div>
+    <div class="app-desc">BasePath:/gregszalay/ocpp_device_service/v2.0.0</div>
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#CreateChargingStation">CreateChargingStation</a></h4>
+  <ul>
+  <li><a href="#createChargingStation"><code><span class="http-method">post</span> /chargingstations/create</code></a></li>
+  </ul>
+  <h4><a href="#DeleteChargingStation">DeleteChargingStation</a></h4>
+  <ul>
+  <li><a href="#deleteChargingStation"><code><span class="http-method">post</span> /chargingstations/delete/{id}</code></a></li>
+  </ul>
+  <h4><a href="#GetChargingStation">GetChargingStation</a></h4>
+  <ul>
+  <li><a href="#getChargingStations"><code><span class="http-method">get</span> /chargingstations/station/{id}</code></a></li>
+  </ul>
+  <h4><a href="#ListChargingStations">ListChargingStations</a></h4>
+  <ul>
+  <li><a href="#getAllChargingStations"><code><span class="http-method">get</span> /chargingstations/list</code></a></li>
+  </ul>
+  <h4><a href="#UpdateChargingStation">UpdateChargingStation</a></h4>
+  <ul>
+  <li><a href="#updateChargingStation"><code><span class="http-method">post</span> /chargingstations/update/{id}</code></a></li>
+  </ul>
+
+  <h1><a name="CreateChargingStation">CreateChargingStation</a></h1>
+  <div class="method"><a name="createChargingStation"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /chargingstations/create</code></pre></div>
+    <div class="method-summary">Adds a new charger in db (<span class="nickname">createChargingStation</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#ChargingStation">ChargingStation</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Creates a new charging station in the db </div>
+                </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ChargingStationId">ChargingStationId</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Successful registration of new device
+        <a href="#ChargingStationId">ChargingStationId</a>
+    <h4 class="field-label">400</h4>
+    Unsuccessful creation
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="DeleteChargingStation">DeleteChargingStation</a></h1>
+  <div class="method"><a name="deleteChargingStation"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /chargingstations/delete/{id}</code></pre></div>
+    <div class="method-summary">Deletes a charger in db (<span class="nickname">deleteChargingStation</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ChargingStation">ChargingStation</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "serialNumber" : "24",
+  "lastBoot" : "2000-01-23T04:56:07.000+00:00",
+  "modem" : {
+    "iccid" : "24",
+    "imsi" : "24"
+  },
+  "model" : "GT-5000",
+  "location" : {
+    "lng" : -71.1854651,
+    "lat" : 42.366446
+  },
+  "id" : "id",
+  "vendorName" : "ChargingStationMaker Inc.",
+  "firmwareVersion" : "2.8"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Successful deletion of charging station
+        <a href="#ChargingStation">ChargingStation</a>
+    <h4 class="field-label">400</h4>
+    Unsuccessful deletion
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="GetChargingStation">GetChargingStation</a></h1>
+  <div class="method"><a name="getChargingStations"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /chargingstations/station/{id}</code></pre></div>
+    <div class="method-summary">Gets charging station data based on id (<span class="nickname">getChargingStations</span>)</div>
+    <div class="method-notes">Get charging station data</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ChargingStation">ChargingStation</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "serialNumber" : "24",
+  "lastBoot" : "2000-01-23T04:56:07.000+00:00",
+  "modem" : {
+    "iccid" : "24",
+    "imsi" : "24"
+  },
+  "model" : "GT-5000",
+  "location" : {
+    "lng" : -71.1854651,
+    "lat" : 42.366446
+  },
+  "id" : "id",
+  "vendorName" : "ChargingStationMaker Inc.",
+  "firmwareVersion" : "2.8"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#ChargingStation">ChargingStation</a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="ListChargingStations">ListChargingStations</a></h1>
+  <div class="method"><a name="getAllChargingStations"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /chargingstations/list</code></pre></div>
+    <div class="method-summary">Get array of all charging stations (<span class="nickname">getAllChargingStations</span>)</div>
+    <div class="method-notes">Get charging station data</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ChargingStationList">ChargingStationList</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "serialNumber" : "24",
+  "lastBoot" : "2000-01-23T04:56:07.000+00:00",
+  "modem" : {
+    "iccid" : "24",
+    "imsi" : "24"
+  },
+  "model" : "GT-5000",
+  "location" : {
+    "lng" : -71.1854651,
+    "lat" : 42.366446
+  },
+  "id" : "id",
+  "vendorName" : "ChargingStationMaker Inc.",
+  "firmwareVersion" : "2.8"
+}, {
+  "serialNumber" : "24",
+  "lastBoot" : "2000-01-23T04:56:07.000+00:00",
+  "modem" : {
+    "iccid" : "24",
+    "imsi" : "24"
+  },
+  "model" : "GT-5000",
+  "location" : {
+    "lng" : -71.1854651,
+    "lat" : 42.366446
+  },
+  "id" : "id",
+  "vendorName" : "ChargingStationMaker Inc.",
+  "firmwareVersion" : "2.8"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#ChargingStationList">ChargingStationList</a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="UpdateChargingStation">UpdateChargingStation</a></h1>
+  <div class="method"><a name="updateChargingStation"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /chargingstations/update/{id}</code></pre></div>
+    <div class="method-summary">Updates a charging station in the database (<span class="nickname">updateChargingStation</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">id (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#ChargingStation">ChargingStation</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Updates charging station </div>
+                </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ChargingStationId">ChargingStationId</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Successful registration of new charging station
+        <a href="#ChargingStationId">ChargingStationId</a>
+    <h4 class="field-label">400</h4>
+    Unsuccessful registration of new charging station
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#ChargingStation"><code>ChargingStation</code></a></li>
+    <li><a href="#ChargingStationId"><code>ChargingStationId</code></a></li>
+    <li><a href="#ChargingStationList"><code>ChargingStationList</code></a></li>
+    <li><a href="#ChargingStation_location"><code>ChargingStation_location</code></a></li>
+    <li><a href="#ChargingStation_modem"><code>ChargingStation_modem</code></a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="ChargingStation"><code>ChargingStation</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#ChargingStationId">ChargingStationId</a></span>  </div>
+<div class="param">serialNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Optional. Vendor-specific device identifier. </div>
+          <div class="param-desc"><span class="param-type">example: 24</span></div>
+<div class="param">model </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Required. Defines the model of the device. </div>
+          <div class="param-desc"><span class="param-type">example: GT-5000</span></div>
+<div class="param">vendorName </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Required. Identifies the vendor (not necessarily in a unique manner). </div>
+          <div class="param-desc"><span class="param-type">example: ChargingStationMaker Inc.</span></div>
+<div class="param">firmwareVersion (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Optional. This contains the firmware version of the Charging Station. </div>
+          <div class="param-desc"><span class="param-type">example: 2.8</span></div>
+<div class="param">modem (optional)</div><div class="param-desc"><span class="param-type"><a href="#ChargingStation_modem">ChargingStation_modem</a></span>  </div>
+<div class="param">location (optional)</div><div class="param-desc"><span class="param-type"><a href="#ChargingStation_location">ChargingStation_location</a></span>  </div>
+<div class="param">lastBoot (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Date and time of last BootNotification received. As defined by date-time - RFC3339 format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ChargingStationId"><code>ChargingStationId</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ChargingStationList"><code>ChargingStationList</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ChargingStation_location"><code>ChargingStation_location</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">lat (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+          <div class="param-desc"><span class="param-type">example: 42.366446</span></div>
+<div class="param">lng (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+          <div class="param-desc"><span class="param-type">example: -71.1854651</span></div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ChargingStation_modem"><code>ChargingStation_modem</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">iccid (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Optional. This contains the ICCID of the modem’s SIMcard. </div>
+          <div class="param-desc"><span class="param-type">example: 24</span></div>
+<div class="param">imsi (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> OCPP - Optional. This contains the IMSI of the modem’s SIM card. </div>
+          <div class="param-desc"><span class="param-type">example: 24</span></div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>

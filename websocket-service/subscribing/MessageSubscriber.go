@@ -2,6 +2,7 @@ package subscribing
 
 import (
 	"context"
+	"os"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-googlecloud/pkg/googlecloud"
@@ -10,6 +11,9 @@ import (
 	"github.com/gregszalay/ocpp-csms/websocket-service/websocketserver"
 	log "github.com/sirupsen/logrus"
 )
+
+var PROJECT_ID string = os.Getenv("GCP_PROJECT_ID")
+var SERVICE_APP_NAME string = os.Getenv("SERVICE_APP_NAME")
 
 var out_topics []string = []string{
 	"BootNotificationResponse",
@@ -23,9 +27,9 @@ func Subscribe() {
 			// custom function to generate Subscription Name,
 			// there are also predefined TopicSubscriptionName and TopicSubscriptionNameWithSuffix available.
 			GenerateSubscriptionName: func(topic string) string {
-				return "websocket-service_" + topic
+				return SERVICE_APP_NAME + "_" + topic
 			},
-			ProjectID: "chargerevolutioncloud",
+			ProjectID: PROJECT_ID,
 		},
 		logger,
 	)

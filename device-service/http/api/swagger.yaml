@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: OCPP Device Service
+  description: REST API to manage OCPP devices (e.g. Charging Stations)
+  termsOfService: ""
+  contact:
+    email: gr.szalay@gmail.com
+  version: v2.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/gregszalay/ocpp_device_service/v2.0.0
+  description: SwaggerHub API Auto Mocking
+- url: /
+tags:
+- name: Get Charging Station
+  description: Get a single charging station in the database.
+- name: List Charging Stations
+  description: List all charging stations in the database.
+- name: Create Charging Station
+  description: Create a charging station in the database.
+- name: Update Charging Station
+  description: Update a charging station in the database.
+- name: Delete Charging Station
+  description: Delete a charging station in the database.
+paths:
+  /chargingstations/station/{id}:
+    get:
+      tags:
+      - Get Charging Station
+      summary: Gets charging station data based on id
+      description: Get charging station data
+      operationId: GetChargingStation
+      parameters:
+      - name: id
+        in: path
+        description: ""
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ChargingStationId'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingStation'
+        "400":
+          description: Invalid status value
+  /chargingstations/list:
+    get:
+      tags:
+      - List Charging Stations
+      summary: Get array of all charging stations
+      description: Get charging station data
+      operationId: GetAllChargingStations
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingStationList'
+        "400":
+          description: Invalid status value
+  /chargingstations/create:
+    post:
+      tags:
+      - Create Charging Station
+      summary: Adds a new charger in db
+      operationId: CreateChargingStation
+      requestBody:
+        description: Creates a new charging station in the db
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargingStation'
+        required: true
+      responses:
+        "200":
+          description: Successful registration of new device
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingStationId'
+        "400":
+          description: Unsuccessful creation
+  /chargingstations/update/{id}:
+    post:
+      tags:
+      - Update Charging Station
+      summary: Updates a charging station in the database
+      operationId: UpdateChargingStation
+      parameters:
+      - name: id
+        in: path
+        description: ""
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ChargingStationId'
+      requestBody:
+        description: Updates charging station
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargingStation'
+        required: true
+      responses:
+        "200":
+          description: Successful registration of new charging station
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingStationId'
+        "400":
+          description: Unsuccessful registration of new charging station
+  /chargingstations/delete/{id}:
+    post:
+      tags:
+      - Delete Charging Station
+      summary: Deletes a charger in db
+      operationId: DeleteChargingStation
+      parameters:
+      - name: id
+        in: path
+        description: ""
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ChargingStationId'
+      responses:
+        "200":
+          description: Successful deletion of charging station
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargingStation'
+        "400":
+          description: Unsuccessful deletion
+components:
+  schemas:
+    ChargingStation:
+      required:
+      - id
+      - model
+      - vendorName
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ChargingStationId'
+        serialNumber:
+          type: string
+          description: OCPP - Optional. Vendor-specific device identifier.
+          example: "24"
+        model:
+          type: string
+          description: OCPP - Required. Defines the model of the device.
+          example: GT-5000
+        vendorName:
+          type: string
+          description: OCPP - Required. Identifies the vendor (not necessarily in
+            a unique manner).
+          example: ChargingStationMaker Inc.
+        firmwareVersion:
+          type: string
+          description: OCPP - Optional. This contains the firmware version of the
+            Charging Station.
+          example: "2.8"
+        modem:
+          $ref: '#/components/schemas/ChargingStation_modem'
+        location:
+          $ref: '#/components/schemas/ChargingStation_location'
+        lastBoot:
+          type: string
+          description: Date and time of last BootNotification received. As defined
+            by date-time - RFC3339
+          format: date-time
+      example:
+        serialNumber: "24"
+        lastBoot: 2000-01-23T04:56:07.000+00:00
+        modem:
+          iccid: "24"
+          imsi: "24"
+        model: GT-5000
+        location:
+          lng: -71.1854651
+          lat: 42.366446
+        id: id
+        vendorName: ChargingStationMaker Inc.
+        firmwareVersion: "2.8"
+    ChargingStationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ChargingStation'
+      x-schema-name: ChargingStationList
+    ChargingStationId:
+      type: string
+    ChargingStation_modem:
+      type: object
+      properties:
+        iccid:
+          type: string
+          description: OCPP - Optional. This contains the ICCID of the modem’s SIMcard.
+          example: "24"
+        imsi:
+          type: string
+          description: OCPP - Optional. This contains the IMSI of the modem’s SIM
+            card.
+          example: "24"
+      example:
+        iccid: "24"
+        imsi: "24"
+    ChargingStation_location:
+      type: object
+      properties:
+        lat:
+          type: number
+          example: 42.366446
+        lng:
+          type: number
+          example: -71.1854651
+      example:
+        lng: -71.1854651
+        lat: 42.366446

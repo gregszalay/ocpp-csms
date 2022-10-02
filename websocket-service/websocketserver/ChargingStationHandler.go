@@ -26,12 +26,12 @@ func ChargingStationHandler(w http.ResponseWriter, r *http.Request) {
 		log.Error("cannot find id in connection url. refusing connection")
 		return
 	}
-	log.Info("websocket connection initiated by charging station with id", id)
+	log.Info("websocket connection initiated by charging station with id ", id)
 
 	// authenticate connection
 	err := authentication.AuthenticateChargingStation(id, r)
 	if err != nil {
-		log.Error("failed to authenticate charging station with id", id, ". refusing connection.")
+		log.Error("failed to authenticate charging station with id ", id, ". refusing connection.")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Failed to authenticate charging station."))
 		return
@@ -62,4 +62,11 @@ func ChargingStationHandler(w http.ResponseWriter, r *http.Request) {
 	// Start message handlers for new connection
 	go new_connection.writeMessagesToDevice()
 	go new_connection.processIncomingMessages()
+
+	ws.SetCloseHandler(func(code int, text string) error {
+		delete(openConnections, id)
+		log.Info("connection closed to charging station ", id)
+		log.Info("number of remaining open connections: ", len(openConnections))
+		return nil
+	})
 }
