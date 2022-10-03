@@ -38,3 +38,14 @@ services:
       - SERVICE_APP_NAME=user-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
       - LOG_LEVEL=Debug
+  transaction-service:
+    build: .
+    command: /app/transaction-service
+    volumes:
+      - ./transaction-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/PRIVATE.json
+      - GCP_PROJECT_ID=chargerevolutioncloud
+      - SERVICE_APP_NAME=transaction-service
+      # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
+      - LOG_LEVEL=Debug

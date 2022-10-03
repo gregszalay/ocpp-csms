@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/gregszalay/ocpp-csms/user-service/subscribing"
+	"github.com/gregszalay/ocpp-csms/transaction-service/subscribing"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -16,13 +16,6 @@ func main() {
 	} else {
 		setLogLevel("Info")
 	}
-
-	// FOR TESTING PURPOSES ONLY:
-	// newIdTokenInfo := AuthorizeRequest.IdTokenType{
-	// 	IdToken: "abcd",
-	// 	Type:    AuthorizeRequest.IdTokenEnumType_1_ISO14443,
-	// }
-	// db.CreateIdToken("ID001", newIdTokenInfo)
 
 	fmt.Println("Creating pubsub subscriptions...")
 	subscribing.Subscribe()

@@ -13,6 +13,7 @@ RUN mkdir build
 RUN go build -o build/device-service ./device-service
 RUN go build -o build/websocket-service ./websocket-service
 RUN go build -o build/user-service ./user-service
+RUN go build -o build/transaction-service ./transaction-service
 
 
 FROM alpine as runtime
@@ -25,3 +26,4 @@ SHELL ["/bin/bash", "-c"]
 COPY --from=builder /app/build/device-service /app/
 COPY --from=builder /app/build/websocket-service /app/
 COPY --from=builder /app/build/user-service /app/
+COPY --from=builder /app/build/transaction-service /app/

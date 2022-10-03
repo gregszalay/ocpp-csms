@@ -1,0 +1,58 @@
+[
+  2,
+  "71b09dda-76a4-426e-a45f-2675a0dfcd08",
+  "TransactionEvent",
+  {
+    "eventType": "Updated",
+    "meterValue": [
+      {
+        "sampledValue": [
+          {
+            "measurand": "Energy.Active.Net",
+            "unitOfMeasure": {
+              "multiplier": 0,
+              "unit": "Wh"
+            },
+            "value": 0.4
+          },
+          {
+            "measurand": "Power.Active.Import",
+            "unitOfMeasure": {
+              "multiplier": 3,
+              "unit": "W"
+            },
+            "value": 22.0
+          }
+        ],
+        "timestamp": "2022-10-01T22:22:41+00:00"
+      },
+      {
+        "sampledValue": [
+          {
+            "measurand": "Energy.Active.Net",
+            "unitOfMeasure": {
+              "multiplier": 3,
+              "unit": "Wh"
+            },
+            "value": 0.5
+          },
+          {
+            "measurand": "Power.Active.Import",
+            "unitOfMeasure": {
+              "multiplier": 3,
+              "unit": "W"
+            },
+            "value": 22.0
+          }
+        ],
+        "timestamp": "2022-10-01T22:27:41+00:00"
+      }
+    ],
+    "seqNo": 3,
+    "timestamp": "2022-10-01T22:30:41+00:00",
+    "transactionInfo": {
+      "transactionId": "TX001"
+    },
+    "triggerReason": "ChargingStateChanged"
+  }
+]
