@@ -5,26 +5,31 @@ import (
 
 	"github.com/gregszalay/firestore-go/firego"
 
-	"github.com/fatih/structs"
 	log "github.com/sirupsen/logrus"
 )
 
 const COLLECTION string = "transactions"
 
 func GetTransaction(id string) (*Transaction, error) {
-	result, err := firego.Get(COLLECTION, id)
+	result, db_err := firego.Get(COLLECTION, id)
+	if db_err != nil {
+		log.Error("failed to get transaction from db", db_err)
+		return nil, db_err
+	}
 
 	jsonStr, err_marshal := json.Marshal(result)
 	if err_marshal != nil {
-		log.Error("failed to marshal transactionList", err_marshal)
+		log.Error("failed to marshal transaction", err_marshal)
+		return nil, err_marshal
 	}
 
-	var transaction Transaction
-	if err_unmarshal := json.Unmarshal(jsonStr, &transaction); err != nil {
+	var transaction *Transaction = &Transaction{}
+	if err_unmarshal := transaction.UnmarshalJSON(jsonStr); err_unmarshal != nil {
 		log.Error("failed to unmarshal transaction json", err_unmarshal)
-
+		return nil, err_unmarshal
 	}
-	return &transaction, err
+
+	return transaction, nil
 }
 
 func ListTransactions() (*[]Transaction, error) {
@@ -46,11 +51,29 @@ func ListTransactions() (*[]Transaction, error) {
 }
 
 func CreateTransaction(id string, newTransaction Transaction) error {
-	return firego.Create(COLLECTION, id, structs.Map(newTransaction))
+	marshalled, marshal_err := json.Marshal(newTransaction)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Create(COLLECTION, id, unmarshalled)
 }
 
 func UpdateTransaction(id string, newTransaction Transaction) error {
-	return firego.Update(COLLECTION, id, structs.Map(newTransaction))
+	marshalled, marshal_err := json.Marshal(newTransaction)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Update(COLLECTION, id, unmarshalled)
 }
 
 func DeleteTransaction(id string) error {

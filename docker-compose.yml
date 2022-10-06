@@ -2,6 +2,7 @@ version: '3'
 
 services:
   websocket-service:
+    image: gregszalay/websocket-service:v1.0
     build: .
     command: /app/websocket-service
     volumes:
@@ -15,6 +16,7 @@ services:
     ports:
       - 3000:3000
   device-service:
+    image: gregszalay/device-service:v1.0
     build: .
     command: /app/device-service
     volumes:
@@ -28,6 +30,7 @@ services:
     ports:
       - 5000:5000
   user-service:
+    image: gregszalay/user-service:v1.0
     build: .
     command: /app/user-service
     volumes:
@@ -39,6 +42,7 @@ services:
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
       - LOG_LEVEL=Debug
   transaction-service:
+    image: gregszalay/transaction-service:v1.0
     build: .
     command: /app/transaction-service
     volumes:

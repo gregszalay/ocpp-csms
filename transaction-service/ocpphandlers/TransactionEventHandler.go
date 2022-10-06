@@ -6,8 +6,9 @@ import (
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
 	"github.com/gregszalay/ocpp-csms/transaction-service/db"
 	"github.com/gregszalay/ocpp-csms/transaction-service/publishing"
-	"github.com/gregszalay/ocpp-messages-go/types/TransactionEventRequest"
 	"github.com/gregszalay/ocpp-messages-go/types/TransactionEventResponse"
+
+	"github.com/gregszalay/ocpp-messages-go/types/TransactionEventRequest"
 	"github.com/sanity-io/litter"
 	log "github.com/sirupsen/logrus"
 )
@@ -37,26 +38,16 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 	case TransactionEventRequest.TransactionEventEnumType_1_Updated:
 		currentTx, err := db.GetTransaction(req.TransactionInfo.TransactionId)
 		if err != nil {
-			log.Error("failed to get previous transaction info from db")
+			log.Error("failed to get previous transaction info from db, error: ", err)
+			return
 		}
-		fmt.Println("litter.Dump(currentTx.MeterValues)")
-		litter.Dump(currentTx.MeterValues)
+		if currentTx == nil {
+			log.Error("currentTx is a nil pointer ")
+			return
+		}
 		originalMeterValues := currentTx.MeterValues
-		fmt.Println("len(originalMeterValues)")
-		fmt.Println(len(originalMeterValues))
-		fmt.Println("cap(originalMeterValues)")
-		fmt.Println(cap(originalMeterValues))
 		latestMeterValues := req.MeterValue
-		fmt.Println("len(latestMeterValues)")
-		fmt.Println(len(latestMeterValues))
-		fmt.Println("cap(latestMeterValues)")
-		fmt.Println(cap(latestMeterValues))
 		newMeterValues := append(originalMeterValues, latestMeterValues...)
-		fmt.Println("len(newMeterValues)")
-		fmt.Println(len(newMeterValues))
-		fmt.Println("cap(newMeterValues)")
-		fmt.Println(cap(newMeterValues))
-
 		db_id := req.TransactionInfo.TransactionId
 		db.UpdateTransaction(db_id, db.Transaction{
 			EnergyTransferInProgress: true,
@@ -67,24 +58,16 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 	case TransactionEventRequest.TransactionEventEnumType_1_Ended:
 		currentTx, err := db.GetTransaction(req.TransactionInfo.TransactionId)
 		if err != nil {
-			log.Error("failed to get previous transaction info from db")
+			log.Error("failed to get previous transaction info from db, error: ", err)
+			return
+		}
+		if currentTx == nil {
+			log.Error("currentTx is a nil pointer ")
+			return
 		}
 		originalMeterValues := currentTx.MeterValues
-		fmt.Println("len(originalMeterValues)")
-		fmt.Println(len(originalMeterValues))
-		fmt.Println("cap(originalMeterValues)")
-		fmt.Println(cap(originalMeterValues))
 		latestMeterValues := req.MeterValue
-		fmt.Println("len(latestMeterValues)")
-		fmt.Println(len(latestMeterValues))
-		fmt.Println("cap(latestMeterValues)")
-		fmt.Println(cap(latestMeterValues))
 		newMeterValues := append(originalMeterValues, latestMeterValues...)
-		fmt.Println("len(newMeterValues)")
-		fmt.Println(len(newMeterValues))
-		fmt.Println("cap(newMeterValues)")
-		fmt.Println(cap(newMeterValues))
-
 		db_id := req.TransactionInfo.TransactionId
 		db.UpdateTransaction(db_id, db.Transaction{
 			EnergyTransferInProgress: false,
@@ -94,8 +77,8 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 		})
 	}
 
-	//RFC3339_time := p(time.Now().Format(time.RFC3339))
-	//time, err := time.Parse( time.RFC3339, "2012-11-01T22:08:41+00:00")
+	// //RFC3339_time := p(time.Now().Format(time.RFC3339))
+	// //time, err := time.Parse( time.RFC3339, "2012-11-01T22:08:41+00:00")
 
 	resp := TransactionEventResponse.TransactionEventResponseJson{
 		UpdatedPersonalMessage: &TransactionEventResponse.MessageContentType{
