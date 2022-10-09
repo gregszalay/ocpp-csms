@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func TransactionEventHandler(request_json []byte, messageId string, deviceId string) {
+func TransactionEventHandler(request_json []byte, messageId string, device_id string) {
 
 	var req TransactionEventRequest.TransactionEventRequestJson
 	payload_unmarshal_err := req.UnmarshalJSON(request_json)
@@ -30,6 +30,7 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 	case TransactionEventRequest.TransactionEventEnumType_1_Started:
 		db_id := req.TransactionInfo.TransactionId
 		db.CreateTransaction(db_id, db.Transaction{
+			StationId:                device_id,
 			EnergyTransferInProgress: true,
 			EnergyTransferStarted:    req.Timestamp,
 			EnergyTransferStopped:    "",
@@ -50,6 +51,7 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 		newMeterValues := append(originalMeterValues, latestMeterValues...)
 		db_id := req.TransactionInfo.TransactionId
 		db.UpdateTransaction(db_id, db.Transaction{
+			StationId:                device_id,
 			EnergyTransferInProgress: true,
 			EnergyTransferStarted:    currentTx.EnergyTransferStarted,
 			EnergyTransferStopped:    currentTx.EnergyTransferStopped,
@@ -70,6 +72,7 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 		newMeterValues := append(originalMeterValues, latestMeterValues...)
 		db_id := req.TransactionInfo.TransactionId
 		db.UpdateTransaction(db_id, db.Transaction{
+			StationId:                device_id,
 			EnergyTransferInProgress: false,
 			EnergyTransferStarted:    currentTx.EnergyTransferStarted,
 			EnergyTransferStopped:    req.Timestamp,
@@ -89,7 +92,7 @@ func TransactionEventHandler(request_json []byte, messageId string, deviceId str
 
 	qm := QueuedMessage.QueuedMessage{
 		MessageId: messageId,
-		DeviceId:  deviceId,
+		DeviceId:  device_id,
 		Payload:   resp,
 	}
 

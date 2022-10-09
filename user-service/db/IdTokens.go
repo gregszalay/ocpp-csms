@@ -6,11 +6,10 @@ import (
 	"github.com/gregszalay/firestore-go/firego"
 	"github.com/gregszalay/ocpp-messages-go/types/AuthorizeRequest"
 
-	"github.com/fatih/structs"
 	log "github.com/sirupsen/logrus"
 )
 
-const COLLECTION string = "IdTokens"
+const COLLECTION string = "idTokens"
 
 func GetIdToken(id string) (AuthorizeRequest.IdTokenType, error) {
 	result, err := firego.Get(COLLECTION, id)
@@ -47,11 +46,29 @@ func ListIdTokens() (*[]AuthorizeRequest.IdTokenType, error) {
 }
 
 func CreateIdToken(id string, newIdToken AuthorizeRequest.IdTokenType) error {
-	return firego.Create(COLLECTION, id, structs.Map(newIdToken))
+	marshalled, marshal_err := json.Marshal(newIdToken)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Create(COLLECTION, id, unmarshalled)
 }
 
 func UpdateIdToken(id string, newIdToken AuthorizeRequest.IdTokenType) error {
-	return firego.Update(COLLECTION, id, structs.Map(newIdToken))
+	marshalled, marshal_err := json.Marshal(newIdToken)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Update(COLLECTION, id, unmarshalled)
 }
 
 func DeleteIdToken(id string) error {

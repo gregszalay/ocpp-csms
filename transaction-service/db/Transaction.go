@@ -10,6 +10,7 @@ import (
 )
 
 type Transaction struct {
+	StationId                string                                   `json:"stationId" yaml:"stationId"`
 	EnergyTransferInProgress bool                                     `json:"energyTransferInProgress" yaml:"energyTransferInProgress"`
 	EnergyTransferStarted    string                                   `json:"energyTransferStarted" yaml:"energyTransferStarted"`
 	EnergyTransferStopped    string                                   `json:"energyTransferStopped" yaml:"energyTransferStopped"`
@@ -25,6 +26,10 @@ func (j *Transaction) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	device_id, err_device_id := raw["deviceId"].(string)
+	if !err_device_id {
+		return errors.New("field deviceId is not a string")
+	}
 	energyTransferInProgress, err_energyTransferInProgress := raw["energyTransferInProgress"].(bool)
 	if !err_energyTransferInProgress {
 		return errors.New("field EnergyTransferInProgress is not a bool")
@@ -62,6 +67,7 @@ func (j *Transaction) UnmarshalJSON(b []byte) error {
 	}
 
 	*j = Transaction{
+		StationId:                device_id,
 		EnergyTransferInProgress: energyTransferInProgress,
 		EnergyTransferStarted:    energyTransferStarted,
 		EnergyTransferStopped:    energyTransferStopped,

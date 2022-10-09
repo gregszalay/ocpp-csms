@@ -6,7 +6,6 @@ import (
 	"github.com/gregszalay/firestore-go/firego"
 	"github.com/gregszalay/ocpp-csms-common-types/devices"
 
-	"github.com/fatih/structs"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -47,11 +46,29 @@ func ListChargingStations() (*[]devices.ChargingStation, error) {
 }
 
 func CreateChargingStation(id string, newCharger devices.ChargingStation) error {
-	return firego.Create(collection, id, structs.Map(newCharger))
+	marshalled, marshal_err := json.Marshal(newCharger)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Create(collection, id, unmarshalled)
 }
 
 func UpdateChargingStation(id string, newCharger devices.ChargingStation) error {
-	return firego.Update(collection, id, structs.Map(newCharger))
+	marshalled, marshal_err := json.Marshal(newCharger)
+	if marshal_err != nil {
+		log.Error("CreateTransaction marshal error: ", marshal_err)
+	}
+	var unmarshalled map[string]interface{}
+	unmarshal_err := json.Unmarshal(marshalled, &unmarshalled)
+	if unmarshal_err != nil {
+		log.Error("CreateTransaction unmarshal error: ", unmarshal_err)
+	}
+	return firego.Update(collection, id, unmarshalled)
 }
 
 func DeleteChargingStation(id string) error {

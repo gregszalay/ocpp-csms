@@ -5,7 +5,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/gregszalay/ocpp-csms/user-service/db"
 	"github.com/gregszalay/ocpp-csms/user-service/subscribing"
+	"github.com/gregszalay/ocpp-messages-go/types/AuthorizeRequest"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -18,11 +20,18 @@ func main() {
 	}
 
 	// FOR TESTING PURPOSES ONLY:
-	// newIdTokenInfo := AuthorizeRequest.IdTokenType{
-	// 	IdToken: "abcd",
-	// 	Type:    AuthorizeRequest.IdTokenEnumType_1_ISO14443,
-	// }
-	// db.CreateIdToken("ID001", newIdTokenInfo)
+
+	newIdTokenInfo := AuthorizeRequest.IdTokenType{
+		IdToken: "AA00001",
+		Type:    AuthorizeRequest.IdTokenEnumType_1_ISO14443,
+	}
+	db.CreateIdToken("TK-1", newIdTokenInfo)
+
+	newIdTokenInfo2 := AuthorizeRequest.IdTokenType{
+		IdToken: "AA00002",
+		Type:    AuthorizeRequest.IdTokenEnumType_1_ISO14443,
+	}
+	db.CreateIdToken("TK-2", newIdTokenInfo2)
 
 	fmt.Println("Creating pubsub subscriptions...")
 	subscribing.Subscribe()
