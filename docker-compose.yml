@@ -16,6 +16,8 @@ services:
       - DEVICE_SERVICE_HOST=device-service
       - DEVICE_SERVICE_PORT=5000
       - DEVICE_SERVICE_GET_STATION_URL=/chargingstations/station
+      - VIRTUAL_HOST=gergelyszalay.hu
+      - LETSENCRYPT_HOST=gergelyszalay.hu
     ports:
       - 3000:3000
   device-service:
@@ -30,6 +32,8 @@ services:
       - SERVICE_APP_NAME=websocket-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
       - LOG_LEVEL=Debug
+      - VIRTUAL_HOST=gergelyszalay.hu
+      - LETSENCRYPT_HOST=gergelyszalay.hu
     ports:
       - 5000:5000
   user-service:
