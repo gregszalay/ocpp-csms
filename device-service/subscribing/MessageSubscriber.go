@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-googlecloud/pkg/googlecloud"
@@ -18,7 +19,9 @@ var PROJECT_ID string = os.Getenv("GCP_PROJECT_ID")
 var SERVICE_APP_NAME string = os.Getenv("SERVICE_APP_NAME")
 
 var call_topics map[string]func([]byte, string, string) = map[string]func([]byte, string, string){
-	"BootNotificationRequest": ocpphandlers.BootNotificationHandler,
+	"BootNotificationRequest":   ocpphandlers.BootNotificationHandler,
+	"HeartbeatRequest":          ocpphandlers.HeartbeatRequestHandler,
+	"StatusNotificationRequest": ocpphandlers.StatusNotificationHandler,
 }
 
 var subs []<-chan *message.Message = []<-chan *message.Message{}
@@ -33,7 +36,9 @@ func Subscribe() {
 			GenerateSubscriptionName: func(topic string) string {
 				return SERVICE_APP_NAME + "_" + topic
 			},
-			ProjectID: PROJECT_ID,
+			ConnectTimeout:    time.Second * 60,
+			InitializeTimeout: time.Second * 60,
+			ProjectID:         PROJECT_ID,
 		},
 		logger,
 	)

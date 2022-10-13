@@ -80,9 +80,6 @@ func TransactionEventHandler(request_json []byte, messageId string, device_id st
 		})
 	}
 
-	// //RFC3339_time := p(time.Now().Format(time.RFC3339))
-	// //time, err := time.Parse( time.RFC3339, "2012-11-01T22:08:41+00:00")
-
 	resp := TransactionEventResponse.TransactionEventResponseJson{
 		UpdatedPersonalMessage: &TransactionEventResponse.MessageContentType{
 			Format:  TransactionEventResponse.MessageFormatEnumTypeUTF8,

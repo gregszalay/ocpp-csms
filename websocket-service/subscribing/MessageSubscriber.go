@@ -19,6 +19,8 @@ var out_topics []string = []string{
 	"BootNotificationResponse",
 	"AuthorizeResponse",
 	"TransactionEventResponse",
+	"HeartbeatResponse",
+	"StatusNotificationResponse",
 }
 
 func Subscribe() {

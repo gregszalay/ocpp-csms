@@ -3,6 +3,7 @@ package publishing
 import (
 	"encoding/json"
 	"os"
+	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-googlecloud/pkg/googlecloud"
@@ -19,7 +20,9 @@ func Publish(topic string, qm interface{}) error {
 
 	if gcp_pub == nil {
 		publisher, err := googlecloud.NewPublisher(googlecloud.PublisherConfig{
-			ProjectID: PROJECT_ID,
+			ProjectID:      PROJECT_ID,
+			ConnectTimeout: time.Second * 60,
+			PublishTimeout: time.Second * 60,
 		}, logger)
 		if err != nil {
 			log.Fatal("Failed to create gcp pulisher client")
