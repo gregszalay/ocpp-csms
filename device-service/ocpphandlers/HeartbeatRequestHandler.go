@@ -13,10 +13,9 @@ func HeartbeatRequestHandler(request_json []byte, messageId string, deviceId str
 
 	//TODO: implement unmarshallign of Heartbeatrequest, if needed
 
-	time_now_RFC3339 := time.Now().Format(time.RFC3339)
 	//time, err := time.Parse( time.RFC3339, "2012-11-01T22:08:41+00:00")
 	resp := HeartbeatResponse.HeartbeatResponseJson{
-		CurrentTime: time_now_RFC3339,
+		CurrentTime: time.Now().Format(time.RFC3339),
 	}
 
 	qm := QueuedMessage.QueuedMessage{

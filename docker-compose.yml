@@ -12,14 +12,12 @@ services:
       - GCP_PROJECT_ID=chargerevolutioncloud
       - SERVICE_APP_NAME=device-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
-      - LOG_LEVEL=Debug
+      - LOG_LEVEL=Info
       - DEVICE_SERVICE_HOST=device-service
       - DEVICE_SERVICE_PORT=5000
       - DEVICE_SERVICE_GET_STATION_URL=/chargingstations/station
-      - VIRTUAL_HOST=gergelyszalay.hu
-      - LETSENCRYPT_HOST=gergelyszalay.hu
     ports:
-      - 3000:3000
+      - "3000:3000"
   device-service:
     image: gregszalay/device-service:v1.0
     build: .
@@ -31,11 +29,9 @@ services:
       - GCP_PROJECT_ID=chargerevolutioncloud
       - SERVICE_APP_NAME=websocket-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
-      - LOG_LEVEL=Debug
-      - VIRTUAL_HOST=gergelyszalay.hu
-      - LETSENCRYPT_HOST=gergelyszalay.hu
+      - LOG_LEVEL=Info
     ports:
-      - 5000:5000
+      - "5000:5000"
   user-service:
     image: gregszalay/user-service:v1.0
     build: .
@@ -47,7 +43,7 @@ services:
       - GCP_PROJECT_ID=chargerevolutioncloud
       - SERVICE_APP_NAME=user-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
-      - LOG_LEVEL=Debug
+      - LOG_LEVEL=Info
   transaction-service:
     image: gregszalay/transaction-service:v1.0
     build: .
@@ -59,4 +55,4 @@ services:
       - GCP_PROJECT_ID=chargerevolutioncloud
       - SERVICE_APP_NAME=transaction-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
-      - LOG_LEVEL=Debug
+      - LOG_LEVEL=Info

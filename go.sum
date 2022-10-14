@@ -109,8 +109,6 @@ github.com/envoyproxy/go-control-plane v0.9.9-0.20210512163311-63b5d3c536b0/go.m
 github.com/envoyproxy/go-control-plane v0.9.10-0.20210907150352-cf90f659a021/go.mod h1:AFq3mo9L8Lqqiid3OhADV3RfLJnjiw63cSpi+fDTRC0=
 github.com/envoyproxy/go-control-plane v0.10.2-0.20220325020618-49ff273808a1/go.mod h1:KJwIaB5Mv44NWtYuAOFCVOjcI94vtpEz2JU/D2v6IjE=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
-github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
-github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
@@ -214,6 +212,8 @@ github.com/gregszalay/firestore-go v0.0.0-20221002200711-639573dfc2d8 h1:e8JgqCr
 github.com/gregszalay/firestore-go v0.0.0-20221002200711-639573dfc2d8/go.mod h1:yTqIi0UENqNs3trQ/c3xd3f3DiKOW4RBk8zT1DPaUuQ=
 github.com/gregszalay/ocpp-csms-common-types v0.0.0-20221002113125-1c2d0c557857 h1:4y0iwrOltr2Av4U1H128Pu/zUCOJg3tPRi/cx7wJ50M=
 github.com/gregszalay/ocpp-csms-common-types v0.0.0-20221002113125-1c2d0c557857/go.mod h1:YNeJwK+O7gVsOz4h9bH1caEy/zRhTH605Oc4chg0awM=
+github.com/gregszalay/ocpp-csms-common-types v0.0.0-20221014160809-cc4d653e9116 h1:GyW1CzItP2bXm7jsnLYYJxgunwwiwCUMim4oYvwl50Y=
+github.com/gregszalay/ocpp-csms-common-types v0.0.0-20221014160809-cc4d653e9116/go.mod h1:YNeJwK+O7gVsOz4h9bH1caEy/zRhTH605Oc4chg0awM=
 github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30 h1:1uRuib7eNGyAKNwi9hYi3su/gNZYQmIi7jO0xjOs8aQ=
 github.com/gregszalay/ocpp-messages-go v0.0.0-20220923195318-07563a96dc30/go.mod h1:L112aq2dovkcOBYSvaQlr1hYY+JXldcx9DWnaYmtzHk=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=

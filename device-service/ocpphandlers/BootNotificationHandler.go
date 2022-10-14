@@ -2,12 +2,15 @@ package ocpphandlers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gregszalay/ocpp-csms-common-types/QueuedMessage"
+	"github.com/gregszalay/ocpp-csms/device-service/db"
 	"github.com/gregszalay/ocpp-csms/device-service/publishing"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationRequest"
 	"github.com/gregszalay/ocpp-messages-go/types/BootNotificationResponse"
 	"github.com/sanity-io/litter"
+	log "github.com/sirupsen/logrus"
 )
 
 func BootNotificationHandler(request_json []byte, messageId string, deviceId string) {
@@ -19,6 +22,18 @@ func BootNotificationHandler(request_json []byte, messageId string, deviceId str
 	} else {
 		fmt.Println("Payload as an OBJECT:")
 		litter.Dump(req)
+	}
+
+	station, err_get := db.GetChargingStation(deviceId)
+	if err_get != nil {
+		log.Error("Failed to get charging station from db. error: ", err_get)
+	}
+
+	station.LastBoot = time.Now().Format(time.RFC3339)
+
+	err_update := db.UpdateChargingStation(deviceId, station)
+	if err_update != nil {
+		log.Error("Failed to update charging station. error: ", err_update)
 	}
 
 	resp := BootNotificationResponse.BootNotificationResponseJson{
