@@ -24,22 +24,24 @@ func BootNotificationHandler(request_json []byte, messageId string, deviceId str
 		litter.Dump(req)
 	}
 
+	resp_status := BootNotificationResponse.RegistrationStatusEnumType_1_Accepted
 	station, err_get := db.GetChargingStation(deviceId)
 	if err_get != nil {
 		log.Error("Failed to get charging station from db. error: ", err_get)
-	}
+		resp_status = BootNotificationResponse.RegistrationStatusEnumType_1_Rejected
+	} else {
+		station.LastBoot = time.Now().Format(time.RFC3339)
 
-	station.LastBoot = time.Now().Format(time.RFC3339)
-
-	err_update := db.UpdateChargingStation(deviceId, station)
-	if err_update != nil {
-		log.Error("Failed to update charging station. error: ", err_update)
+		err_update := db.UpdateChargingStation(deviceId, station)
+		if err_update != nil {
+			log.Error("Failed to update charging station. error: ", err_update)
+		}
 	}
 
 	resp := BootNotificationResponse.BootNotificationResponseJson{
 		CurrentTime: "",
 		Interval:    60,
-		Status:      BootNotificationResponse.RegistrationStatusEnumType_1_Accepted,
+		Status:      resp_status,
 	}
 
 	qm := QueuedMessage.QueuedMessage{
