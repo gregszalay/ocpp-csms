@@ -23,7 +23,6 @@ func AuthorizeHandler(request_json []byte, messageId string, deviceId string) {
 		litter.Dump(req)
 	}
 
-	//TODO implement rfid auth properly
 	all_tokens, err := db.ListIdTokens()
 	if err != nil {
 		log.Error("failed to get idtokens from db", err)
