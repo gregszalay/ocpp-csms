@@ -44,7 +44,7 @@ func process_as_CALL(stationId string, message []byte) error {
 		Payload:   call.Payload,
 	}
 	call_topic := call.Action + "Request"
-	// We publish the CALLRESULT to the relevant upbsub topic
+	// We publish the CALLRESULT to the relevant pupbsub topic
 	if err := publishing.Publish(call_topic, qm); err != nil {
 		log.Error(err)
 	}

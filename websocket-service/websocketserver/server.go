@@ -1,7 +1,9 @@
 package websocketserver
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -22,7 +24,22 @@ var OCPP_PORT string = ":3000"
 
 func Start() {
 	router := newRouter()
-	log.Fatal(http.ListenAndServe(OCPP_PORT, router))
+	TLS_CERT_FILE := os.Getenv("TLS_CERT_FILE")
+	TLS_KEY_FILE := os.Getenv("TLS_KEY_FILE")
+	fmt.Println("TLS_CERT_FILE path:")
+	fmt.Println(TLS_CERT_FILE)
+
+	fmt.Println("TLS_KEY_FILE path:")
+	fmt.Println(TLS_KEY_FILE)
+	
+	if TLS_CERT_FILE != "" && TLS_KEY_FILE != "" {
+		log.Info("TLS certificate found, serving secure TLS")
+		log.Fatal(http.ListenAndServeTLS(OCPP_PORT, TLS_CERT_FILE, TLS_KEY_FILE, router))
+
+	} else {
+		log.Warn("TLS certificate not found, serving unsecure ws")
+		log.Fatal(http.ListenAndServe(OCPP_PORT, router))
+	}
 }
 
 func newRouter() *mux.Router {

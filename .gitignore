@@ -5,6 +5,10 @@
 *.so
 *.dylib
 
+*/tls-certs/*
+*/credentials/*
+cert-permissions.sh
+
 # Test binary, built with `go test -c`
 *.test
 

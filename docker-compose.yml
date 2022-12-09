@@ -6,7 +6,8 @@ services:
     build: .
     command: /app/websocket-service
     volumes:
-      - ./websocket-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
+      #- ./websocket-service/credentials/PRIVATE.json:/tmp/keys/PRIVATE.json:ro
+      - ./websocket-service/credentials:/tmp/keys:ro
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/PRIVATE.json
       - GCP_PROJECT_ID=chargerevolutioncloud
@@ -16,6 +17,8 @@ services:
       - DEVICE_SERVICE_HOST=device-service
       - DEVICE_SERVICE_PORT=5000
       - DEVICE_SERVICE_GET_STATION_URL=/chargingstations/station
+      - TLS_CERT_FILE=/tmp/keys/fullchain.pem
+      - TLS_KEY_FILE=/tmp/keys/privkey13.pem
     ports:
       - "3000:3000"
   device-service:
