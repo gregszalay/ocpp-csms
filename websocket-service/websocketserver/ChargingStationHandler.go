@@ -29,6 +29,11 @@ func ChargingStationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Info("websocket connection initiated by charging station with id ", id)
 
+	if _, ok := openConnections[id]; ok {
+		log.Error("Client with this id is already connected. Refusing connection.")
+		return
+	}
+
 	// authenticate connection
 	err := authentication.AuthenticateChargingStation(id, r)
 	if err != nil {
@@ -40,7 +45,7 @@ func ChargingStationHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info("charger successfully authenticated")
 
 	// upgrade to websocket connection
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	//upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Error("failed to establish websocket connection on the server, error: ", err)
