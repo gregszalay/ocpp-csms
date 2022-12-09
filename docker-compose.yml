@@ -59,3 +59,15 @@ services:
       - SERVICE_APP_NAME=transaction-service
       # LOG_LEVEL Panic, Fatal, Error, Warn, Info, Debug, Trace
       - LOG_LEVEL=Info
+    # TODO: configure container for frontend-service 
+    #  frontend-service:
+    #   build:
+    #    context: ./frontend-service
+    #   dockerfile: Dockerfile
+    #  volumes:
+    #   - ./frontend-service/src:/app/src
+    #command: npm run start
+    #ports:
+    # - "8085:8085"
+
+    #    environment: #NODE_ENV: development
