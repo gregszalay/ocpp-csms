@@ -12,8 +12,9 @@ import (
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:    1024,
+	WriteBufferSize:   1024,
+	EnableCompression: true,
 }
 
 var openConnections map[string]*ChargingStationConnection = map[string]*ChargingStationConnection{}
@@ -47,6 +48,7 @@ func ChargingStationHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("failed to establish websocket connection on the server"))
 		return
 	}
+	_ = ws.SetCompressionLevel(9)
 	log.Info("successfully established websocket connection")
 
 	// Create and save ws connection object
