@@ -1,7 +1,9 @@
 package websocketserver
 
 import (
-	"fmt"
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -24,22 +26,42 @@ var OCPP_PORT string = ":3000"
 
 func Start() {
 	router := newRouter()
-	TLS_CERT_FILE := os.Getenv("TLS_CERT_FILE")
-	TLS_KEY_FILE := os.Getenv("TLS_KEY_FILE")
-	fmt.Println("TLS_CERT_FILE path:")
-	fmt.Println(TLS_CERT_FILE)
+	SERVER_TLS_CERT_FILE := os.Getenv("SERVER_TLS_CERT_FILE")
+	SERVER_TLS_KEY_FILE := os.Getenv("SERVER_TLS_KEY_FILE")
+	log.Info("SERVER_TLS_CERT_FILE path:")
+	log.Info(SERVER_TLS_CERT_FILE)
+	log.Info("SERVER_TLS_KEY_FILE path:")
+	log.Info(SERVER_TLS_KEY_FILE)
 
-	fmt.Println("TLS_KEY_FILE path:")
-	fmt.Println(TLS_KEY_FILE)
-	
-	if TLS_CERT_FILE != "" && TLS_KEY_FILE != "" {
+	CLIENT_TLS_CERT_FILE := os.Getenv("CLIENT_TLS_CERT_FILE")
+	log.Info("CLIENT_TLS_CERT_FILE path:")
+	log.Info(CLIENT_TLS_CERT_FILE)
+
+	if SERVER_TLS_CERT_FILE != "" && SERVER_TLS_KEY_FILE != "" {
+
+		caCert, _ := ioutil.ReadFile(CLIENT_TLS_CERT_FILE)
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(caCert)
+
+		tlsConfig := &tls.Config{
+			ClientCAs:  caCertPool,
+			ClientAuth: tls.RequireAndVerifyClientCert,
+		}
+		tlsConfig.BuildNameToCertificate()
+
+		server := &http.Server{
+			Handler:   router,
+			Addr:      OCPP_PORT,
+			TLSConfig: tlsConfig,
+		}
+
 		log.Info("TLS certificate found, serving secure TLS")
-		log.Fatal(http.ListenAndServeTLS(OCPP_PORT, TLS_CERT_FILE, TLS_KEY_FILE, router))
-
+		log.Fatal(server.ListenAndServeTLS(SERVER_TLS_CERT_FILE, SERVER_TLS_KEY_FILE))
 	} else {
 		log.Warn("TLS certificate not found, serving unsecure ws")
 		log.Fatal(http.ListenAndServe(OCPP_PORT, router))
 	}
+
 }
 
 func newRouter() *mux.Router {

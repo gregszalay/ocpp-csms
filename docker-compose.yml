@@ -19,6 +19,7 @@ services:
       - DEVICE_SERVICE_GET_STATION_URL=/chargingstations/station
       - TLS_CERT_FILE=/tmp/keys/fullchain.pem
       - TLS_KEY_FILE=/tmp/keys/privkey.pem
+      - CLIENT_TLS_CERT_FILE=/tmp/keys/client_cert.pem
     ports:
       - "3000:3000"
   device-service:
